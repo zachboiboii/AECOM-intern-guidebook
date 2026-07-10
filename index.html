@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Enviro Intern Field Notebook — AECOM Singapore</title>
+<style>
+  :root{
+    --paper:#faf6ee; --ink:#3b3428; --teal:#1d7a6f; --amber:#e8a13d;
+    --coral:#e07856; --sage:#8aa876; --card:#fffdf7; --line:#e3dccb;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:Georgia,'Times New Roman',serif; background:var(--paper); color:var(--ink); line-height:1.6;}
+  header{padding:40px 24px 20px; text-align:center; border-bottom:3px double var(--line); position:relative;}
+  header h1{font-size:1.9rem; letter-spacing:.5px;}
+  header p{font-style:italic; color:#7a7160; margin-top:6px;}
+  .stamp{display:inline-block; margin-top:10px; padding:4px 14px; border:2px solid var(--teal); color:var(--teal);
+    border-radius:4px; transform:rotate(-2deg); font-size:.8rem; letter-spacing:2px; text-transform:uppercase;}
+  nav{display:flex; flex-wrap:wrap; justify-content:center; gap:10px; padding:20px;}
+  nav button, #subnav button, .btn{font-family:inherit; cursor:pointer;}
+  nav .tab{font-size:.95rem; padding:10px 18px; border:2px solid var(--ink);
+    border-radius:20px; background:var(--card); transition:.15s;}
+  nav .tab:hover{transform:translateY(-2px); box-shadow:2px 3px 0 var(--ink);}
+  nav .tab.active{background:var(--ink); color:var(--paper);}
+  #subnav{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; padding:0 20px 14px;}
+  #subnav .tab{font-size:.85rem; padding:6px 14px; border:1.5px dashed var(--teal);
+    border-radius:16px; background:var(--card); color:var(--teal);}
+  #subnav .tab.active{background:var(--teal); color:#fff; border-style:solid;}
+  .addbtn{border:2px dashed #b0a890 !important; color:#8b8270 !important; background:transparent !important;}
+  #search{display:block; margin:0 auto 8px; width:min(420px,90%); padding:10px 16px; font-family:inherit;
+    font-size:.95rem; border:2px solid var(--line); border-radius:20px; background:var(--card);}
+  main{max-width:820px; margin:0 auto; padding:16px 20px 80px;}
+  .intro{background:var(--card); border:1px solid var(--line); border-left:5px solid var(--amber);
+    padding:16px 20px; border-radius:6px; margin-bottom:20px; font-style:italic;}
+  details{background:var(--card); border:1px solid var(--line); border-radius:8px; margin-bottom:12px;
+    box-shadow:2px 2px 0 rgba(59,52,40,.08); overflow:hidden;}
+  summary{cursor:pointer; padding:14px 18px; font-weight:bold; font-size:1.05rem; list-style:none; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  summary::before{content:"▸"; color:var(--coral); transition:.2s;}
+  details[open] summary::before{transform:rotate(90deg);}
+  .body{padding:0 18px 16px 40px; white-space:pre-wrap;}
+  .tag{font-size:.7rem; padding:2px 10px; border-radius:10px; color:#fff; margin-left:auto; font-family:sans-serif; letter-spacing:1px;}
+  .tag.must{background:var(--coral);} .tag.tip{background:var(--sage);} .tag.info{background:var(--teal);}
+  footer{text-align:center; padding:24px; color:#8b8270; font-size:.85rem; border-top:3px double var(--line);}
+  mark{background:#ffe9a8;}
+  /* --- edit mode --- */
+  #editbar{position:fixed; bottom:16px; right:16px; display:flex; gap:8px; z-index:10;}
+  .btn{padding:10px 16px; border-radius:20px; border:2px solid var(--ink); background:var(--card); font-size:.9rem; box-shadow:2px 3px 0 rgba(59,52,40,.25);}
+  .btn.primary{background:var(--teal); border-color:var(--teal); color:#fff;}
+  body.editing .tab .x{margin-left:8px; color:var(--coral); font-weight:bold;}
+  .entry-tools{display:none; gap:6px; margin-left:8px;}
+  body.editing .entry-tools{display:inline-flex;}
+  .entry-tools button{border:1px solid var(--line); background:var(--paper); border-radius:6px; padding:2px 8px; font-size:.75rem; cursor:pointer;}
+  #editform{background:var(--card); border:2px solid var(--teal); border-radius:8px; padding:16px; margin-bottom:16px; display:none;}
+  #editform input, #editform textarea, #editform select{width:100%; font-family:inherit; font-size:.95rem;
+    padding:8px 10px; margin-bottom:10px; border:1px solid var(--line); border-radius:6px; background:var(--paper);}
+  #editform textarea{min-height:120px; resize:vertical;}
+  #editnote{display:none; text-align:center; font-size:.8rem; color:#8b8270; padding-bottom:8px;}
+  body.editing #editnote{display:block;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌿 The Enviro Intern Field Notebook</h1>
+  <p>Passed down from one AECOM Singapore Environment intern to the next</p>
+  <span class="stamp">Survived &amp; Approved</span>
+</header>
+
+<input id="search" type="search" placeholder="Search the notebook… (try 'EIA' or 'lunch')">
+<nav id="nav"></nav>
+<div id="subnav"></div>
+<div id="editnote">Edit mode: click ✕ to delete tabs, ＋ to add. Changes save automatically in this browser. Use Export to get a shareable copy.</div>
+<main>
+  <div id="editform">
+    <input id="f-title" placeholder="Entry title">
+    <select id="f-tag"><option value="info">info (teal)</option><option value="tip">tip (green)</option><option value="must">must (red)</option></select>
+    <textarea id="f-body" placeholder="Entry text…"></textarea>
+    <button class="btn primary" id="f-save">Save entry</button>
+    <button class="btn" id="f-cancel">Cancel</button>
+  </div>
+  <div class="intro" id="intro"></div>
+  <div id="entries"></div>
+</main>
+
+<div id="editbar">
+  <button class="btn" id="toggle-edit">✏️ Edit</button>
+  <button class="btn primary" id="export" style="display:none">💾 Export HTML</button>
+</div>
+
+<footer>Started by Zach, class of 2026 · Add your own entries before you leave — that's the deal.</footer>
+
+<!-- Default content lives here. You can still edit it by hand,
+     but the easier way is the ✏️ Edit button in the browser. -->
+<script type="application/json" id="handbook-data">
+{
+  "Start Here": {
+    "intro": "Day one to week one. Read this before anything else.",
+    "entries": [
+      { "title": "Before your first day", "tag": "must",
+        "body": "Reply HR's onboarding email early — laptop and building pass take a few days.\nDress code: business casual. Nobody wears a tie.\nOffice: check your offer letter for the current address, teams move floors." },
+      { "title": "Accounts you'll need", "tag": "must",
+        "body": "Outlook + Teams (IT sets up)\nOracle timesheet — ask your buddy how to book hours to the right project code, it's not obvious\nShared drive: ask your supervisor for the Environment team folder path" },
+      { "title": "Who's who in the Environment team", "tag": "info",
+        "body": "[Edit me: list your supervisor, team lead, the admin who knows everything, and who to ask about site work]" },
+      { "title": "Timesheets — do them Friday", "tag": "must",
+        "body": "Log hours against project numbers weekly. Chasing codes a month later is painful. Ask before booking to overhead." }
+    ]
+  },
+  "Field Guides": {
+    "intro": "The actual work: what the team does and how to not mess it up.",
+    "subsections": {
+      "EIA": {
+        "intro": "Environmental Impact Assessment 101.",
+        "entries": [
+          { "title": "EIA in 5 minutes", "tag": "info",
+            "body": "Environmental Impact Assessment = predict a project's environmental effects before it's built.\nTypical chapters you'll touch: air, noise, water quality, biodiversity, waste.\n[Edit me: link the team's best example report as a template]" }
+        ]
+      },
+      "Soil & Groundwater": {
+        "intro": "Sampling, labs, and paperwork.",
+        "entries": [
+          { "title": "Soil & groundwater basics", "tag": "info",
+            "body": "[Edit me: sampling SOPs, chain of custody forms, which lab the team uses, borehole log examples]" }
+        ]
+      },
+      "Noise": {
+        "intro": "Meters, limits, tripods.",
+        "entries": [
+          { "title": "Noise monitoring", "tag": "info",
+            "body": "[Edit me: sound level meter model, calibration steps, NEA boundary noise limits, where the tripod lives]" }
+        ]
+      },
+      "Reports & Software": {
+        "intro": "Deliverables and the tools behind them.",
+        "entries": [
+          { "title": "Report formatting rules", "tag": "must",
+            "body": "Always start from the latest AECOM template — never a colleague's old report.\nFigures need sources. Tables need units.\nRun the QA checklist before sending anything to your reviewer." },
+          { "title": "Software you'll actually use", "tag": "tip",
+            "body": "Excel (90% of the job)\n[Edit me: GIS? Noise modelling software? Where to get licences?]" }
+        ]
+      }
+    }
+  },
+  "Survival Tips": {
+    "intro": "The unwritten rules. This section is the real handbook.",
+    "entries": [
+      { "title": "Ask early, ask specific", "tag": "tip",
+        "body": "Being stuck for 3 hours helps nobody. Try for 20 minutes, then ask with: what you're doing, what you tried, what happened." },
+      { "title": "Site visit checklist", "tag": "must",
+        "body": "Safety boots + helmet (ask where spares are kept)\nSunscreen, water, insect repellent — Singapore sun is not a joke\nCharge your phone, download the site location offline\nBring a physical notebook, gloves get in the way of phones" },
+      { "title": "Lunch intel", "tag": "tip",
+        "body": "[Edit me: best hawker centre near the office, the stall that sells out by 12.30, who to join for lunch]" },
+      { "title": "Email like a consultant", "tag": "tip",
+        "body": "Short subject lines with the project number.\nBottom-line-up-front: say what you need in the first sentence.\nCC your supervisor on anything going to a client." },
+      { "title": "Things I wish someone told me", "tag": "tip",
+        "body": "[Edit me: your top 5. Be honest. This is the entry future interns will screenshot.]" }
+    ]
+  },
+  "My Journey": {
+    "intro": "Why this notebook exists, and where an internship can take you.",
+    "entries": [
+      { "title": "Zach's story", "tag": "info",
+        "body": "[Edit me: 3 short paragraphs — how you got the internship, one project you're proud of, one thing that surprised you]" },
+      { "title": "Getting noticed (the good way)", "tag": "tip",
+        "body": "Volunteer for site work — that's where you learn and where people remember you.\nKeep a running doc of everything you did. Gold for your resume and your final presentation." },
+      { "title": "Converting to full-time", "tag": "tip",
+        "body": "[Edit me: who to talk to, when to raise it, what the grad programme is called]" },
+      { "title": "People worth coffee-chatting", "tag": "info",
+        "body": "[Edit me: roles, not names if you prefer — 'the hydrologist on level 12', 'the EIA lead who's great at career advice']" }
+    ]
+  }
+}
+</script>
+
+<script>
+/* =================================================================
+   You normally don't need to touch anything below.
+   Use the ✏️ Edit button in the browser instead:
+   - add / delete tabs and sub-tabs
+   - add / edit / delete entries
+   - changes auto-save in this browser (localStorage)
+   - 💾 Export downloads a new HTML file with everything baked in,
+     which you can share or replace this file with.
+   ================================================================= */
+const STORE = 'enviro-handbook-v1';
+const defaultData = JSON.parse(document.getElementById('handbook-data').textContent);
+let DATA;
+try { DATA = JSON.parse(localStorage.getItem(STORE)) || defaultData; }
+catch(e){ DATA = defaultData; }
+
+const nav = document.getElementById('nav'), subnav = document.getElementById('subnav'),
+      entriesEl = document.getElementById('entries'), introEl = document.getElementById('intro'),
+      searchEl = document.getElementById('search'), form = document.getElementById('editform');
+let current = Object.keys(DATA)[0], currentSub = null, editing = false, editIndex = null;
+
+function save(){ localStorage.setItem(STORE, JSON.stringify(DATA)); }
+function esc(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function currentList(){
+  const sec = DATA[current];
+  if(sec.subsections){
+    if(!currentSub || !sec.subsections[currentSub]) currentSub = Object.keys(sec.subsections)[0];
+    return sec.subsections[currentSub];
+  }
+  return sec;
+}
+
+/* ---------- tabs ---------- */
+function renderNav(){
+  nav.innerHTML = '';
+  Object.keys(DATA).forEach(secName => {
+    const b = document.createElement('button');
+    b.className = 'tab' + (secName === current ? ' active' : '');
+    b.innerHTML = esc(secName) + (editing ? '<span class="x">✕</span>' : '');
+    b.onclick = ev => {
+      if(editing && ev.target.classList.contains('x')){
+        if(confirm(`Delete the whole "${secName}" tab and everything in it?`)){
+          delete DATA[secName];
+          if(!Object.keys(DATA).length) DATA = {"New tab":{intro:"",entries:[]}};
+          current = Object.keys(DATA)[0]; currentSub = null; save(); renderAll();
+        }
+        return;
+      }
+      current = secName; currentSub = null; searchEl.value=''; renderAll();
+    };
+    nav.appendChild(b);
+  });
+  if(editing){
+    const add = document.createElement('button');
+    add.className = 'tab addbtn'; add.textContent = '＋ tab';
+    add.onclick = () => {
+      const name = prompt('Name of the new tab:'); if(!name || DATA[name]) return;
+      DATA[name] = { intro: '', entries: [] };
+      current = name; currentSub = null; save(); renderAll();
+    };
+    nav.appendChild(add);
+  }
+}
+
+/* ---------- sub-tabs ---------- */
+function renderSubnav(){
+  subnav.innerHTML = '';
+  const sec = DATA[current];
+  if(sec.subsections){
+    if(!currentSub || !sec.subsections[currentSub]) currentSub = Object.keys(sec.subsections)[0];
+    Object.keys(sec.subsections).forEach(name => {
+      const b = document.createElement('button');
+      b.className = 'tab' + (name === currentSub ? ' active' : '');
+      b.innerHTML = esc(name) + (editing ? '<span class="x">✕</span>' : '');
+      b.onclick = ev => {
+        if(editing && ev.target.classList.contains('x')){
+          if(confirm(`Delete sub-tab "${name}"?`)){
+            delete sec.subsections[name];
+            if(!Object.keys(sec.subsections).length){
+              delete sec.subsections; sec.entries = sec.entries || [];
+            }
+            currentSub = null; save(); renderAll();
+          }
+          return;
+        }
+        currentSub = name; renderAll();
+      };
+      subnav.appendChild(b);
+    });
+  }
+  if(editing){
+    const add = document.createElement('button');
+    add.className = 'tab addbtn'; add.textContent = '＋ sub-tab';
+    add.onclick = () => {
+      const name = prompt('Name of the new sub-tab:'); if(!name) return;
+      if(!sec.subsections){
+        // convert a flat section: its existing entries move into a first sub-tab
+        sec.subsections = {};
+        if((sec.entries||[]).length) sec.subsections['General'] = { intro:'', entries: sec.entries };
+        delete sec.entries;
+      }
+      if(sec.subsections[name]) return;
+      sec.subsections[name] = { intro:'', entries: [] };
+      currentSub = name; save(); renderAll();
+    };
+    subnav.appendChild(add);
+  }
+}
+
+/* ---------- entries ---------- */
+function card(e, i, open=false, hl=''){
+  const mark = s => hl ? esc(s).replace(new RegExp('('+hl.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>') : esc(s);
+  const tools = editing && i!==null ? `<span class="entry-tools"><button data-act="edit" data-i="${i}">edit</button><button data-act="del" data-i="${i}">delete</button></span>` : '';
+  return `<details${open?' open':''}><summary>${mark(e.title)}${tools}<span class="tag ${e.tag}">${e.tag}</span></summary><div class="body">${mark(e.body)}</div></details>`;
+}
+
+function renderSection(){
+  const view = currentList();
+  introEl.style.display = view.intro ? '' : 'none';
+  introEl.textContent = view.intro || '';
+  let html = (view.entries||[]).map((e,i) => card(e,i)).join('');
+  if(editing) html += `<button class="btn addbtn" id="add-entry" style="width:100%">＋ add entry here</button>`;
+  entriesEl.innerHTML = html;
+  const addE = document.getElementById('add-entry');
+  if(addE) addE.onclick = () => openForm(null);
+  entriesEl.querySelectorAll('.entry-tools button').forEach(b => {
+    b.onclick = ev => {
+      ev.preventDefault(); ev.stopPropagation();
+      const i = +b.dataset.i;
+      if(b.dataset.act === 'del'){
+        if(confirm('Delete this entry?')){ currentList().entries.splice(i,1); save(); renderSection(); }
+      } else openForm(i);
+    };
+  });
+}
+
+function openForm(i){
+  editIndex = i;
+  const e = i===null ? {title:'',tag:'info',body:''} : currentList().entries[i];
+  document.getElementById('f-title').value = e.title;
+  document.getElementById('f-tag').value = e.tag;
+  document.getElementById('f-body').value = e.body;
+  form.style.display = 'block'; form.scrollIntoView({behavior:'smooth'});
+}
+document.getElementById('f-save').onclick = () => {
+  const e = { title: document.getElementById('f-title').value.trim() || 'Untitled',
+              tag: document.getElementById('f-tag').value,
+              body: document.getElementById('f-body').value };
+  const list = currentList();
+  list.entries = list.entries || [];
+  if(editIndex === null) list.entries.push(e); else list.entries[editIndex] = e;
+  form.style.display = 'none'; save(); renderSection();
+};
+document.getElementById('f-cancel').onclick = () => form.style.display = 'none';
+
+/* ---------- search ---------- */
+function allEntries(){
+  const out = [];
+  for(const [secName,data] of Object.entries(DATA)){
+    if(data.entries) data.entries.forEach(e => out.push([secName, e]));
+    if(data.subsections)
+      for(const [sub,sd] of Object.entries(data.subsections))
+        (sd.entries||[]).forEach(e => out.push([secName+' › '+sub, e]));
+  }
+  return out;
+}
+searchEl.oninput = () => {
+  const q = searchEl.value.trim().toLowerCase();
+  if(!q){ renderAll(); return; }
+  introEl.style.display = 'none'; subnav.innerHTML = '';
+  let html = '';
+  for(const [label,e] of allEntries())
+    if((e.title+e.body).toLowerCase().includes(q))
+      html += `<p style="font-size:.8rem;color:#8b8270;margin:8px 0 2px">${esc(label)}</p>` + card(e,null,true,q);
+  entriesEl.innerHTML = html || '<p style="text-align:center;font-style:italic">Nothing found. Maybe you should write that entry!</p>';
+};
+
+/* ---------- edit mode + export ---------- */
+document.getElementById('toggle-edit').onclick = () => {
+  editing = !editing;
+  document.body.classList.toggle('editing', editing);
+  document.getElementById('toggle-edit').textContent = editing ? '✅ Done' : '✏️ Edit';
+  document.getElementById('export').style.display = editing ? '' : 'none';
+  form.style.display = 'none';
+  renderAll();
+};
+document.getElementById('export').onclick = () => {
+  document.getElementById('handbook-data').textContent = '\n' + JSON.stringify(DATA, null, 2) + '\n';
+  document.body.classList.remove('editing');
+  form.style.display = 'none';
+  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  document.body.classList.add('editing');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([html], {type:'text/html'}));
+  a.download = 'intern-handbook.html';
+  a.click();
+  alert('Downloaded! Replace the old file with this one — your edits are now baked in and will show for anyone you share it with.');
+};
+
+function renderAll(){ renderNav(); renderSubnav(); renderSection(); }
+renderAll();
+</script>
+</body>
+</html>
