@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Enviro Intern Field Notebook — AECOM Singapore</title>
@@ -43,9 +42,12 @@
   footer{text-align:center; padding:24px; color:#8b8270; font-size:.85rem; border-top:3px double var(--line);}
   mark{background:#ffe9a8;}
   /* --- edit mode --- */
-  #editbar{position:fixed; bottom:16px; right:16px; display:flex; gap:8px; z-index:10;}
+  #editbar{position:fixed; bottom:16px; right:16px; display:flex; flex-direction:column; align-items:flex-end; gap:8px; z-index:10;}
+  #editbar-row{display:flex; gap:8px;}
   .btn{padding:10px 16px; border-radius:20px; border:2px solid var(--ink); background:var(--card); font-size:.9rem; box-shadow:2px 3px 0 rgba(59,52,40,.25);}
   .btn.primary{background:var(--teal); border-color:var(--teal); color:#fff;}
+  .btn:disabled{opacity:.6; cursor:default;}
+  #pub-status{font-size:.78rem; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:4px 10px; max-width:260px; text-align:right; display:none;}
   body.editing .tab .x{margin-left:8px; color:var(--coral); font-weight:bold;}
   .entry-tools{display:none; gap:6px; margin-left:8px;}
   body.editing .entry-tools{display:inline-flex;}
@@ -58,7 +60,7 @@
   body.editing #editnote{display:block;}
 </style>
 </head>
-<body>
+<body class="">
 
 <header>
   <h1>🌿 The Enviro Intern Field Notebook</h1>
@@ -67,43 +69,80 @@
 </header>
 
 <input id="search" type="search" placeholder="Search the notebook… (try 'EIA' or 'lunch')">
-<nav id="nav"></nav>
-<div id="subnav"></div>
-<div id="editnote">Edit mode: click ✕ to delete tabs, ＋ to add. Changes save automatically in this browser. Use Export to get a shareable copy.</div>
+<nav id="nav"><button class="tab active">Start Here<span class="x">✕</span></button><button class="tab">Field Guides<span class="x">✕</span></button><button class="tab">Survival Tips<span class="x">✕</span></button><button class="tab">Software Guide<span class="x">✕</span></button><button class="tab addbtn">＋ tab</button></nav>
+<div id="subnav"><button class="tab addbtn">＋ sub-tab</button></div>
+<div id="editnote">Edit mode: click ✕ to delete tabs, ＋ to add. Click "🚀 Publish for everyone" when you're done to push your changes live for the whole team.</div>
 <main>
-  <div id="editform">
+  <div id="editform" style="display: none;">
     <input id="f-title" placeholder="Entry title">
     <select id="f-tag"><option value="info">info (teal)</option><option value="tip">tip (green)</option><option value="must">must (red)</option></select>
     <textarea id="f-body" placeholder="Entry text…"></textarea>
     <button class="btn primary" id="f-save">Save entry</button>
     <button class="btn" id="f-cancel">Cancel</button>
   </div>
-  <div class="intro" id="intro"></div>
-  <div id="entries"></div>
+  <div class="intro" id="intro">Day one to week one. Read this before anything else.</div>
+  <div id="entries"><details><summary>Before your first day<span class="entry-tools"><button data-act="edit" data-i="0">edit</button><button data-act="del" data-i="0">delete</button></span><span class="tag must">must</span></summary><div class="body">Reply HR's onboarding email early
+Dress code: business casual
+Office: check your offer letter for the team and department that you're entering, you'll need to introduce yourself as "Xiao Ming from XXX Department"</div></details><details><summary>Accounts you'll need<span class="entry-tools"><button data-act="edit" data-i="1">edit</button><button data-act="del" data-i="1">delete</button></span><span class="tag must">must</span></summary><div class="body">1. Outlook (IT will set up on Day 1)
+2. Teams (IT will set up on Day 1)
+3. AECOM University (this is AECOM's learning site)
+4. Seat Booking (For you to book your seats in office, dont worry 1st day they book for you, then subsequently, may the fastest fingers win
+5. Oracle (Ask your buddy how to fill in the timesheet properly, and book hours to the right project code, it's one of the most time-consuming task here, but it's the only possible way for you to claim your working allowance)
+6. Request for access to ENV shared one-drive (ask your supervisor for the Environment team folder path)</div></details><details><summary>Introduction to the Environment team<span class="entry-tools"><button data-act="edit" data-i="2">edit</button><button data-act="del" data-i="2">delete</button></span><span class="tag info">info</span></summary><div class="body">Big Boss: Albert (He supervises Biodiversity, Water, Acoustics and RC)
+Env HR: Elaine
+EMMP PM: Catherine
+Biodiversity PM: Ash
+Water PM: Liang Liang
+Acoustics PM: Mandy
+Remediation PM: William</div></details><details><summary>Timesheets — Due every Thursday before 10am<span class="entry-tools"><button data-act="edit" data-i="3">edit</button><button data-act="del" data-i="3">delete</button></span><span class="tag must">must</span></summary><div class="body">What you need: [ask your buddy for project number]
+1. Project ID Number
+2. Tasking ID Number
+3. If unsure, it'll be good to just clarify rather than to make assumptions</div></details><details><summary>Useful Links<span class="entry-tools"><button data-act="edit" data-i="4">edit</button><button data-act="del" data-i="4">delete</button></span><span class="tag tip">tip</span></summary><div class="body">Timesheet: 
+</div></details><button class="btn addbtn" id="add-entry" style="width:100%">＋ add entry here</button></div>
 </main>
 
 <div id="editbar">
-  <button class="btn" id="toggle-edit">✏️ Edit</button>
-  <button class="btn primary" id="export" style="display:none">💾 Export HTML</button>
+  <div id="pub-status"></div>
+  <div id="editbar-row">
+    <button class="btn" id="toggle-edit">✏️ Edit</button>
+    <button class="btn primary" id="publish" style="display:none">🚀 Publish for everyone</button>
+  </div>
 </div>
 
 <footer>Started by Zach, intern of 2026 · Add your own entries before you leave — that's the deal.</footer>
 
-<!-- Default content lives here. You can still edit it by hand,
-     but the easier way is the ✏️ Edit button in the browser. -->
+<!-- Default content lives here. It's kept in sync automatically whenever
+     someone clicks "🚀 Publish for everyone" in the browser. -->
 <script type="application/json" id="handbook-data">
 {
   "Start Here": {
     "intro": "Day one to week one. Read this before anything else.",
     "entries": [
-      { "title": "Before your first day", "tag": "must",
-        "body": "Reply HR's onboarding email early — laptop and building pass take a few days.\nDress code: business casual. Nobody wears a tie.\nOffice: check your offer letter for the current address, teams move floors." },
-      { "title": "Accounts you'll need", "tag": "must",
-        "body": "Outlook + Teams (IT sets up)\nOracle timesheet — ask your buddy how to book hours to the right project code, it's not obvious\nShared drive: ask your supervisor for the Environment team folder path" },
-      { "title": "Who's who in the Environment team", "tag": "info",
-        "body": "[Edit me: list your supervisor, team lead, the admin who knows everything, and who to ask about site work]" },
-      { "title": "Timesheets — do them Friday", "tag": "must",
-        "body": "Log hours against project numbers weekly. Chasing codes a month later is painful. Ask before booking to overhead." }
+      {
+        "title": "Before your first day",
+        "tag": "must",
+        "body": "Reply HR's onboarding email early\nDress code: business casual\nOffice: check your offer letter for the team and department that you're entering, you'll need to introduce yourself as \"Xiao Ming from XXX Department\""
+      },
+      {
+        "title": "Accounts you'll need",
+        "tag": "must",
+        "body": "1. Outlook (IT will set up on Day 1)\n2. Teams (IT will set up on Day 1)\n3. AECOM University (this is AECOM's learning site)\n4. Seat Booking (For you to book your seats in office, dont worry 1st day they book for you, then subsequently, may the fastest fingers win\n5. Oracle (Ask your buddy how to fill in the timesheet properly, and book hours to the right project code, it's one of the most time-consuming task here, but it's the only possible way for you to claim your working allowance)\n6. Request for access to ENV shared one-drive (ask your supervisor for the Environment team folder path)"
+      },
+      {
+        "title": "Introduction to the Environment team",
+        "tag": "info",
+        "body": "Big Boss: Albert (He supervises Biodiversity, Water, Acoustics and RC)\nEnv HR: Elaine\nEMMP PM: Catherine\nBiodiversity PM: Ash\nWater PM: Liang Liang\nAcoustics PM: Mandy\nRemediation PM: William"
+      },
+      {
+        "title": "Timesheets — Due every Thursday before 10am",
+        "tag": "must",
+        "body": "What you need: [ask your buddy for project number]\n1. Project ID Number\n2. Tasking ID Number\n3. If unsure, it'll be good to just clarify rather than to make assumptions"
+      },
+      {
+        "title": "Useful Links",
+        "tag": "tip",
+        "body": "Timesheet: \n"
+      }
     ]
   },
   "Field Guides": {
@@ -112,31 +151,41 @@
       "EIA": {
         "intro": "Environmental Impact Assessment 101.",
         "entries": [
-          { "title": "EIA in 5 minutes", "tag": "info",
-            "body": "Environmental Impact Assessment = predict a project's environmental effects before it's built.\nTypical chapters you'll touch: air, noise, water quality, biodiversity, waste.\n[Edit me: link the team's best example report as a template]" }
+          {
+            "title": "EIA in 5 minutes",
+            "tag": "info",
+            "body": "Environmental Impact Assessment = predict a project's environmental effects before it's built.\nTypical chapters you'll touch: air, noise, water quality, biodiversity, waste.\n[Edit me: link the team's best example report as a template]"
+          }
         ]
       },
-      "Soil & Groundwater": {
-        "intro": "Sampling, labs, and paperwork.",
-        "entries": [
-          { "title": "Soil & groundwater basics", "tag": "info",
-            "body": "[Edit me: sampling SOPs, chain of custody forms, which lab the team uses, borehole log examples]" }
-        ]
+      "Water": {
+        "intro": "",
+        "entries": []
       },
-      "Noise": {
-        "intro": "Meters, limits, tripods.",
-        "entries": [
-          { "title": "Noise monitoring", "tag": "info",
-            "body": "[Edit me: sound level meter model, calibration steps, NEA boundary noise limits, where the tripod lives]" }
-        ]
+      "Biodiversity": {
+        "intro": "",
+        "entries": []
       },
-      "Reports & Software": {
-        "intro": "Deliverables and the tools behind them.",
+      "Remediation": {
+        "intro": "",
+        "entries": []
+      },
+      "EMMP": {
+        "intro": "",
+        "entries": []
+      },
+      "Accoustics": {
+        "intro": "",
+        "entries": []
+      },
+      "Sampling Survey Assistance": {
+        "intro": "",
         "entries": [
-          { "title": "Report formatting rules", "tag": "must",
-            "body": "Always start from the latest AECOM template — never a colleague's old report.\nFigures need sources. Tables need units.\nRun the QA checklist before sending anything to your reviewer." },
-          { "title": "Software you'll actually use", "tag": "tip",
-            "body": "Excel (90% of the job)\n[Edit me: GIS? Noise modelling software? Where to get licences?]" }
+          {
+            "title": "5W1H",
+            "tag": "info",
+            "body": "Sampling survey means"
+          }
         ]
       }
     }
@@ -144,29 +193,51 @@
   "Survival Tips": {
     "intro": "The unwritten rules. This section is the real handbook.",
     "entries": [
-      { "title": "Ask early, ask specific", "tag": "tip",
-        "body": "Being stuck for 3 hours helps nobody. Try for 20 minutes, then ask with: what you're doing, what you tried, what happened." },
-      { "title": "Site visit checklist", "tag": "must",
-        "body": "Safety boots + helmet (ask where spares are kept)\nSunscreen, water, insect repellent — Singapore sun is not a joke\nCharge your phone, download the site location offline\nBring a physical notebook, gloves get in the way of phones" },
-      { "title": "Lunch intel", "tag": "tip",
-        "body": "[Edit me: best hawker centre near the office, the stall that sells out by 12.30, who to join for lunch]" },
-      { "title": "Email like a consultant", "tag": "tip",
-        "body": "Short subject lines with the project number.\nBottom-line-up-front: say what you need in the first sentence.\nCC your supervisor on anything going to a client." },
-      { "title": "Things I wish someone told me", "tag": "tip",
-        "body": "[Edit me: your top 5. Be honest. This is the entry future interns will screenshot.]" }
+      {
+        "title": "Ask early, ask specific",
+        "tag": "tip",
+        "body": "Being stuck for 3 hours helps nobody. Try for 20 minutes, then ask with: what you're doing, what you tried, what happened."
+      },
+      {
+        "title": "Site visit checklist",
+        "tag": "must",
+        "body": "Safety boots + helmet (ask where spares are kept)\nSunscreen, water, insect repellent — Singapore sun is not a joke\nCharge your phone, download the site location offline\nBring a physical notebook, gloves get in the way of phones"
+      },
+      {
+        "title": "Lunch intel",
+        "tag": "tip",
+        "body": "[Edit me: best hawker centre near the office, the stall that sells out by 12.30, who to join for lunch]"
+      },
+      {
+        "title": "Email like a consultant",
+        "tag": "tip",
+        "body": "Short subject lines with the project number.\nBottom-line-up-front: say what you need in the first sentence.\nCC your supervisor on anything going to a client."
+      },
+      {
+        "title": "Things I wish someone told me",
+        "tag": "tip",
+        "body": "[Edit me: your top 5. Be honest. This is the entry future interns will screenshot.]"
+      }
     ]
   },
-  "My Journey": {
-    "intro": "Why this notebook exists, and where an internship can take you.",
+  "Software Guide": {
+    "intro": "",
     "entries": [
-      { "title": "Zach's story", "tag": "info",
-        "body": "[Edit me: 3 short paragraphs — how you got the internship, one project you're proud of, one thing that surprised you]" },
-      { "title": "Getting noticed (the good way)", "tag": "tip",
-        "body": "Volunteer for site work — that's where you learn and where people remember you.\nKeep a running doc of everything you did. Gold for your resume and your final presentation." },
-      { "title": "Converting to full-time", "tag": "tip",
-        "body": "[Edit me: who to talk to, when to raise it, what the grad programme is called]" },
-      { "title": "People worth coffee-chatting", "tag": "info",
-        "body": "[Edit me: roles, not names if you prefer — 'the hydrologist on level 12', 'the EIA lead who's great at career advice']" }
+      {
+        "title": "Excel",
+        "tag": "must",
+        "body": ""
+      },
+      {
+        "title": "Word",
+        "tag": "must",
+        "body": ""
+      },
+      {
+        "title": "ArcGIS",
+        "tag": "must",
+        "body": ""
+      }
     ]
   }
 }
@@ -178,10 +249,16 @@
    Use the ✏️ Edit button in the browser instead:
    - add / delete tabs and sub-tabs
    - add / edit / delete entries
-   - changes auto-save in this browser (localStorage)
-   - 💾 Export downloads a new HTML file with everything baked in,
-     which you can share or replace this file with.
+   - changes are cached locally in this browser as a safety net
+   - 🚀 Publish for everyone sends the current data to a small
+     Cloudflare Worker, which commits it straight to this repo's
+     index.html on GitHub. GitHub Pages then rebuilds the site for
+     everyone within a minute or two.
    ================================================================= */
+
+// Fill this in once you've deployed the Worker (see setup instructions).
+const WORKER_URL = 'https://handbook.yimzhenglong.workers.dev';
+
 const STORE = 'enviro-handbook-v1';
 const defaultData = JSON.parse(document.getElementById('handbook-data').textContent);
 let DATA;
@@ -350,30 +427,66 @@ searchEl.oninput = () => {
   entriesEl.innerHTML = html || '<p style="text-align:center;font-style:italic">Nothing found. Maybe you should write that entry!</p>';
 };
 
-/* ---------- edit mode + export ---------- */
+/* ---------- edit mode + publish ---------- */
 document.getElementById('toggle-edit').onclick = () => {
   editing = !editing;
   document.body.classList.toggle('editing', editing);
   document.getElementById('toggle-edit').textContent = editing ? '✅ Done' : '✏️ Edit';
-  document.getElementById('export').style.display = editing ? '' : 'none';
+  document.getElementById('publish').style.display = editing ? '' : 'none';
   form.style.display = 'none';
   renderAll();
 };
-document.getElementById('export').onclick = () => {
-  document.getElementById('handbook-data').textContent = '\n' + JSON.stringify(DATA, null, 2) + '\n';
-  document.body.classList.remove('editing');
-  form.style.display = 'none';
-  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-  document.body.classList.add('editing');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([html], {type:'text/html'}));
-  a.download = 'intern-handbook.html';
-  a.click();
-  alert('Downloaded! Replace the old file with this one — your edits are now baked in and will show for anyone you share it with.');
+
+const pubStatus = document.getElementById('pub-status');
+function setStatus(msg, kind){
+  pubStatus.textContent = msg;
+  pubStatus.style.display = msg ? 'block' : 'none';
+  pubStatus.style.color = kind === 'error' ? '#c0392b' : (kind === 'ok' ? '#1d7a6f' : '#8b8270');
+}
+
+document.getElementById('publish').onclick = async () => {
+  if(WORKER_URL.includes('REPLACE-ME')){
+    alert('The publish endpoint hasn\'t been set up yet. See the setup instructions to deploy the Worker and paste its URL into WORKER_URL near the top of the script.');
+    return;
+  }
+  let passcode = localStorage.getItem('handbook-passcode');
+  if(!passcode){
+    passcode = prompt('Shared team passcode to publish:');
+    if(!passcode) return;
+    localStorage.setItem('handbook-passcode', passcode);
+  }
+  let author = localStorage.getItem('handbook-author');
+  if(!author){
+    author = prompt('Your name (shown in the commit history):') || 'someone';
+    localStorage.setItem('handbook-author', author);
+  }
+
+  const btn = document.getElementById('publish');
+  btn.disabled = true;
+  setStatus('Publishing…', 'pending');
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passcode, author, data: DATA }),
+    });
+    const out = await res.json();
+    if(!res.ok || out.error){
+      if(res.status === 401) localStorage.removeItem('handbook-passcode');
+      setStatus('Publish failed: ' + (out.error || res.status), 'error');
+    } else {
+      setStatus('Published! Live for everyone in a minute or two.', 'ok');
+    }
+  } catch (e) {
+    setStatus('Publish failed: could not reach the server.', 'error');
+  } finally {
+    btn.disabled = false;
+  }
 };
 
 function renderAll(){ renderNav(); renderSubnav(); renderSection(); }
 renderAll();
 </script>
-</body>
-</html>
+
+
+</body></html>
