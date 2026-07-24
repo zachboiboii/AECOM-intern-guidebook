@@ -37,6 +37,9 @@
   summary::before{content:"▸"; color:var(--coral); transition:.2s;}
   details[open] summary::before{transform:rotate(90deg);}
   .body{padding:0 18px 16px 40px; white-space:pre-wrap;}
+  .body a{color:var(--teal); text-decoration-thickness:1px; text-underline-offset:2px; overflow-wrap:anywhere;}
+  .body a:hover{color:var(--coral);}
+  .body a:focus-visible{outline:2px solid var(--amber); outline-offset:2px; border-radius:2px;}
   .tag{font-size:.7rem; padding:2px 10px; border-radius:10px; color:#fff; margin-left:auto; font-family:sans-serif; letter-spacing:1px;}
   .tag.must{background:var(--coral);} .tag.tip{background:var(--sage);} .tag.info{background:var(--teal);}
   footer{text-align:center; padding:24px; color:#8b8270; font-size:.85rem; border-top:3px double var(--line);}
@@ -320,6 +323,28 @@ let current = Object.keys(DATA)[0], currentSub = null, editing = false, editInde
 
 function save(){ localStorage.setItem(STORE, JSON.stringify(DATA)); }
 function esc(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function highlight(s, term){
+  if(!term) return esc(s);
+  const pattern = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return esc(s).replace(new RegExp(`(${pattern})`, 'gi'), '<mark>$1</mark>');
+}
+function linkify(s, term=''){
+  const urlPattern = /https?:\/\/[^\s<>"']+/gi;
+  let html = '', lastIndex = 0;
+
+  for(const match of s.matchAll(urlPattern)){
+    let url = match[0];
+    const trailingPunctuation = url.match(/[.,;:!?]+$/)?.[0] || '';
+    if(trailingPunctuation) url = url.slice(0, -trailingPunctuation.length);
+
+    html += highlight(s.slice(lastIndex, match.index), term);
+    html += `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${highlight(url, term)}</a>`;
+    html += highlight(trailingPunctuation, term);
+    lastIndex = match.index + match[0].length;
+  }
+
+  return html + highlight(s.slice(lastIndex), term);
+}
 
 function currentList(){
   const sec = DATA[current];
@@ -409,9 +434,8 @@ function renderSubnav(){
 
 /* ---------- entries ---------- */
 function card(e, i, open=false, hl=''){
-  const mark = s => hl ? esc(s).replace(new RegExp('('+hl.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>') : esc(s);
   const tools = editing && i!==null ? `<span class="entry-tools"><button data-act="edit" data-i="${i}">edit</button><button data-act="del" data-i="${i}">delete</button></span>` : '';
-  return `<details${open?' open':''}><summary>${mark(e.title)}${tools}<span class="tag ${e.tag}">${e.tag}</span></summary><div class="body">${mark(e.body)}</div></details>`;
+  return `<details${open?' open':''}><summary>${highlight(e.title, hl)}${tools}<span class="tag ${e.tag}">${e.tag}</span></summary><div class="body">${linkify(e.body, hl)}</div></details>`;
 }
 
 function renderSection(){
